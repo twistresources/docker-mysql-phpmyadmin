@@ -71,7 +71,12 @@ After each restart the database will be empty, but can be reloaded with the most
 
     $ db/dbload
     
-    
+
+#### Application Database Access
+
+Your application can connect to the database using the hostname provided by `DOCKER_IP` and the port number `DB_PORT`. The dbrun command also displays the DB details when it starts.
+
+
 #### Multiple Projects
 The `db/dbenv.sh` config file contains three port numbers (`SSH_PORT`, `HTTP_PORT` and `DB_PORT`) and a name for the Docker container (`CONTAINER_NAME`). These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - simply set unique values for these variables in the config of each project.
 
