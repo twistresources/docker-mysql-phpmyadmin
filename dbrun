@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+#	Start the mysql database
+#
+. ./dbenv.sh
+
+echo docker run --name some-mysql -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 --rm wnameless/mysql-phpmyadmin
+docker run --name some-mysql -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 --rm wnameless/mysql-phpmyadmin

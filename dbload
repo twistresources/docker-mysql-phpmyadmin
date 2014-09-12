@@ -1,0 +1,34 @@
+#!/bin/bash
+#
+#	Export the database to a local file.
+#	This is VERY important, because the Docker container
+#	will be destroyed as it is shut down.
+#
+. ./dbenv.sh
+
+# Find a unique dump name
+n=1
+last='-'
+while [ -e ${DB_NAME}.dump.${n} ] ; do
+	last=${n}
+	n=`expr $n + 1`
+done
+dumpfile=${DB_NAME}.dump.${last}
+echo ''
+ls -l $dumpfile
+
+# Create the SQL file
+TFILE="/tmp/$(basename $0).$$.tmp"
+#echo "drop database \`${DB_NAME}\` ;" >> $TFILE
+echo "create database \`${DB_NAME}\` ;" >> $TFILE
+echo "connect \`${DB_NAME}\` ;" >> $TFILE
+cat ${dumpfile} >> $TFILE
+
+# Load the database
+echo "(Password is 'admin')"
+echo ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root < ${TFILE}
+ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root < ${TFILE}
+
+# Tidy up
+rm ${TFILE}
+exit 0

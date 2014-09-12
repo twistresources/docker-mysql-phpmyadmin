@@ -1,0 +1,6 @@
+#!/bin/bash
+#
+#	Save database contents and stop the Docker container.
+#
+./dbdump && \
+docker stop some-mysql

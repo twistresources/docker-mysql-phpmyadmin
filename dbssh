@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+#	Use SSH to log into the Mysql Docker container.
+#
+. ./dbenv.sh
+
+echo Password is 'admin'
+echo ssh root@${DOCKER_IP} -p ${SSH_PORT} "$@"
+ssh root@${DOCKER_IP} -p ${SSH_PORT} "$@"
