@@ -1,6 +1,8 @@
-## Easy use of MySQL on an OSX machine
+## Easy use of MySQL on OSX machines
 
 The shell commands in this repo allow you to easily fire up a MySQL instance on OSX.
+
+The first database can be set up in a few minutes, and subsequent databases can be created in a few seconds. With a few scripts, databases can be quickly fired up and shut down instantly for testing purposes or during application development. It is intended that these scripts along with relevant data files will be checked into our project repositories.
 
 They work by using [Docker](https://www.docker.com), a highly efficient virtualization technology. Docker allows MySQL to be run with out the complications of installing it on OSX. It also allows multiple project-specific databases to run concurrently.
 
@@ -50,7 +52,7 @@ or you can jump to this page using:
 
     $ db/dbadmin
 
-__Note__: After the first login you will need to use the web interface to create a database with the name you set in `DOCKER_IP`.
+__Note__: After the first login you will need to use the web interface to create a database with the name you specified for the `DB_NAME` config variable.
 
 If you wish to log into the MySQL container, you can use the following command. This and the other commands below use the default password 'admin'. If you will be using the database a lot it's a good idea to set up SSH keys for password-less login.
 
