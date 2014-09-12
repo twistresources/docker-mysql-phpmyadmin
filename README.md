@@ -2,7 +2,7 @@
 
 The shell commands in this repo allow you to easily fire up a MySQL instance on OSX.
 
-The first database can be set up in a few minutes, and subsequent databases can be created in a few seconds. With a few scripts, databases can be quickly fired up and shut down instantly for testing purposes or during application development. It is intended that these scripts along with relevant data files will be checked into our project repositories.
+A first database can be set up in a few minutes (while you wait for the download), and subsequent databases can be created in a few seconds. With a few scripts, databases can be instantly fired up or shut down for testing purposes or during application development. It is intended that these scripts along with relevant data files will be checked into our project repositories.
 
 They work by using [Docker](https://www.docker.com), a highly efficient virtualization technology. Docker allows MySQL to be run with out the complications of installing it on OSX. It also allows multiple project-specific databases to run concurrently.
 
