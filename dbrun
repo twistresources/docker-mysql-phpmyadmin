@@ -112,5 +112,6 @@ END4
 #exit 1
 ssh root@${DOCKER_IP} -p ${SSH_PORT} /bin/bash -s < ${TFILE}
 
-
+rm ${TFILE}
+exit 0
 
