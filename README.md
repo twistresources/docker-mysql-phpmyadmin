@@ -1,4 +1,10 @@
-This repository contains simple commands for running MySql and PhpMyAdmin in a Docker container on an OSX machine.
+The shell commands in this repo allow you to easily fire up a MySQL instance on OSX.
+
+They work by using [Docker](https://www.docker.com), a highly efficient virtualization technology. Docker allows MySQL to be run with out the complications of installing it on OSX. It also allows multiple project-specific databases to run concurrently.
+
+The commands here also run PhpMyAdmin, a great web interface for administering MySQL, and are based on the Docker image [wnameless/mysql-phpmyadmin](https://registry.hub.docker.com/u/wnameless/mysql-phpmyadmin/).
+
+
 
 #### The problem
 On OSX we run Docker using [Boot2Docker](https://github.com/boot2docker/boot2docker). This is required because Docker is Linux, not OSX. To get around this Boot2Docker installs VirtualBox, and runs Docker inside a virtual machine.
@@ -43,7 +49,7 @@ After end restart the database will be empty, but can be reloaded using
     $ dbload
     
     
-#### Port Numbers
-The `dbenv.sh` config file contains three port numbers - `SSH_PORT`, `HTTP_PORT` and `DB_PORT`. These don't normally need to be changed, . However if you wish to run multiple instances of this MySQL database, perhaps one fo each project, new port numbers can be inserted.
+#### Multiple Projects
+The `dbenv.sh` config file contains three port numbers: `SSH_PORT`, `HTTP_PORT` and `DB_PORT`. These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - then new port numbers can be placed in each config file.
 
 --
