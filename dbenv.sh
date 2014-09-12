@@ -11,4 +11,4 @@ export DOCKER_HOST=tcp://${DOCKER_IP}:2375
 
 # And the most project specific variable...
 DB_NAME=tooltwist-forum
-CONTAINER_NAME=some-mysql
+CONTAINER_NAME=forum-mysql

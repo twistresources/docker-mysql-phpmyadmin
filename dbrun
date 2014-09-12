@@ -9,6 +9,9 @@ echo ''
 echo ''
 echo "    Use PhpMyAdmin at: http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin"
 echo ''
+echo "        Database host: ${DOCKER_IP}
+echo "        Database port: ${HTTP_PORT}
+echo ''
 echo ''
 
 echo docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 --rm wnameless/mysql-phpmyadmin

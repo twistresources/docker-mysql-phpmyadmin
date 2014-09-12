@@ -21,7 +21,7 @@ ls -l $dumpfile
 # Create the SQL file
 TFILE="/tmp/$(basename $0).$$.tmp"
 #echo "drop database \`${DB_NAME}\` ;" >> $TFILE
-echo "create database \`${DB_NAME}\` ;" >> $TFILE
+#echo "create database \`${DB_NAME}\` ;" >> $TFILE
 echo "connect \`${DB_NAME}\` ;" >> $TFILE
 cat ${dumpfile} >> $TFILE
 
