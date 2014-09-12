@@ -67,7 +67,7 @@ This command creates sequentially named data files. Note though that whenever yo
 
     $ db/dbstop
     
-After end restart the database will be empty, but can be reloaded using
+After each restart the database will be empty, but can be reloaded with the most recently dumped contents using
 
     $ db/dbload
     
