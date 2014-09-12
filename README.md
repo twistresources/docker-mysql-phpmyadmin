@@ -26,14 +26,14 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
     
 2. Move the downloaded files to your project directory and tidy up.
 
-    $ mv docker-mysql-phpmyadmin/* .
+    $ mv docker-mysql-phpmyadmin/* .  
     $ rm -rf docker-mysql-phpmyadmin
 
 3. Update the configuration file `dbenv.sh`:
 
-DB_NAME - This name of a database you wish to create for your application.
+  DB_NAME - This name of a database you wish to create for your application.
 
-DOCKER_IP - This probably doesn'need to be this changed, but check that it matches the output of `boot2docker ip`.
+  DOCKER_IP - This probably doesn't need to be this changed, but check it matches the output of `boot2docker ip`.
 
 
 #### Commands
