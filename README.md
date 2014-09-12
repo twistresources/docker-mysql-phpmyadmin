@@ -24,12 +24,12 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
 
     $ git clone https://github.com/twistresources/docker-mysql-phpmyadmin.git
     
-2. Move the downloaded files to your project directory and tidy up.
+2. Place the downloaded files into a nicer location and tidy up.
 
-    $ mv docker-mysql-phpmyadmin/* .  
-    $ rm -rf docker-mysql-phpmyadmin
+    $ mv docker-mysql-phpmyadmin db  
+    $ rm db/.git
 
-3. Update the configuration file `dbenv.sh`:
+3. Update the configuration file `db/dbenv.sh`:
 
   DB_NAME - This name of a database you wish to create for your application.
 
@@ -40,7 +40,7 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
 
 To start the database run:
 
-    $ ./dbrun
+    $ db/dbrun
     
 First time in this will download the Docker image, which takes a while, but it's much faster subsequently. Once it starts it tails the database log to the console. You can then access PhpMyAdmin from your browser, at
 
@@ -50,23 +50,23 @@ __Note__: After the first login you will need to use the web interface to create
 
 If you wish to log into the MySQL container, you can use the following command. This and the other commands below use the default password 'admin'. If you will be using the database a lot it's a good idea to set up SSH keys for password-less login.
 
-    $ ./dbssh
+    $ db/dbssh
     
 
 You can back up the database at any time using:
 
-    $ ./dbdump
+    $ db/dbdump
     
 This command creates sequentially named data files. Note though that whenever you shut down the database it will run this data dump before shutting the server down.
 
-    $ ./dbstop
+    $ db/dbstop
     
 After end restart the database will be empty, but can be reloaded using
 
-    $ ./dbload
+    $ db/dbload
     
     
 #### Multiple Projects
-The `dbenv.sh` config file contains three port numbers: `SSH_PORT`, `HTTP_PORT` and `DB_PORT`. These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - then new port numbers can be placed in each config file.
+The `db/dbenv.sh` config file contains three port numbers: `SSH_PORT`, `HTTP_PORT` and `DB_PORT`. These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - simply set unique port numbers for these variables in each project.
 
 --
