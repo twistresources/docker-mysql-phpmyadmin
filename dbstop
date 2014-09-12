@@ -2,7 +2,8 @@
 #
 #	Save database contents and stop the Docker container.
 #
-. ./dbenv.sh
+bin=`dirname $0`
+. $bin/dbenv.sh
 
-./dbdump && \
-docker stop some-mysql
+$bin/dbdump && \
+docker stop ${CONTAINER_NAME}

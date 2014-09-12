@@ -4,7 +4,8 @@
 #	This is VERY important, because the Docker container
 #	will be destroyed as it is shut down.
 #
-. ./dbenv.sh
+bin=`dirname $0`
+. $bin/dbenv.sh
 
 # Find a unique dump name
 n=1

@@ -46,6 +46,10 @@ First time in this will download the Docker image, which takes a while, but it's
 
     http://192.168.59.103:49161/phpmyadmin.
 
+or you can jump to this page using:
+
+    $ db/dbadmin
+
 __Note__: After the first login you will need to use the web interface to create a database with the name you set in `DOCKER_IP`.
 
 If you wish to log into the MySQL container, you can use the following command. This and the other commands below use the default password 'admin'. If you will be using the database a lot it's a good idea to set up SSH keys for password-less login.
@@ -67,6 +71,6 @@ After end restart the database will be empty, but can be reloaded using
     
     
 #### Multiple Projects
-The `db/dbenv.sh` config file contains three port numbers: `SSH_PORT`, `HTTP_PORT` and `DB_PORT`. These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - simply set unique port numbers for these variables in each project.
+The `db/dbenv.sh` config file contains three port numbers (`SSH_PORT`, `HTTP_PORT` and `DB_PORT`) and a name for the Docker container (`CONTAINER_NAME`). These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - simply set unique values for these variables in the config of each project.
 
 --

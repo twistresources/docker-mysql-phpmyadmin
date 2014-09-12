@@ -1,0 +1,8 @@
+#!/bin/bash
+#
+#	Start the mysql database
+#
+bin=`dirname $0`
+. $bin/dbenv.sh
+
+exec open http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin
