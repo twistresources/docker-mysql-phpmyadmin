@@ -44,7 +44,7 @@ To start the database run:
 
     $ db/dbrun
     
-First time in this will download the Docker image, which takes a while, but it's much faster subsequently. Once it starts it tails the database log to the console. You can then access PhpMyAdmin from your browser, at
+First time in this will download the Docker image, which takes a while, but it's much faster subsequently. You'll need to enter the default password ('admin') during this step. Once it starts you can access PhpMyAdmin from your browser, at
 
     http://192.168.59.103:49161/phpmyadmin.
 
@@ -52,9 +52,7 @@ or you can jump to this page using:
 
     $ db/dbadmin
 
-__Note__: After the first login you will need to use the web interface to create a database with the name you specified for the `DB_NAME` config variable.
-
-If you wish to log into the MySQL container, you can use the following command. This and the other commands below use the default password 'admin'. If you will be using the database a lot it's a good idea to set up SSH keys for password-less login.
+If you wish to log into the MySQL container, you can use the following command.
 
     $ db/dbssh
     
@@ -63,7 +61,7 @@ You can back up the database at any time using:
 
     $ db/dbdump
     
-This command creates sequentially named data files. Note though that whenever you shut down the database it will run this data dump before shutting the server down.
+This command creates sequentially named data files. Note that whenever you shut down the database it will also run this data dump before shutting the server down.
 
     $ db/dbstop
     
@@ -76,21 +74,8 @@ After each restart the database will be empty, but can be reloaded with the most
 
 Your application can connect to the database using the hostname provided by `DOCKER_IP` and the port number `DB_PORT`. The dbrun command also displays the DB details when it starts.
 
-**Update:**  
-Unfortunately MySQL now seems to block non-localhost access to databases by default. This might not be a problem if you are running you application inside a Docker container, but if you wish to connect to the database from a program running on your OSX desktop you'll need to update the configuration in the mysql container.
-
-Log in using the `db/dbssh` command, then do the following:
-
-    $ apt-get install vim
-    $ vi /etc/mysql/my.cnf
-    
-Comment out the line `bind-address           = 127.0.0.1`.
-
-    $ mysqladmin -u root shutdown  
-    $ mysqld_safe &
-    $ exit
-
-You should now be able to connect to the database.
+**PLEASE NOTE:**  
+During development the root user is given full permissions to the database, without password protection. Do not expose this database outside the local firewall. Be especially careful if this Docker container is promoted through to cloud based servers for testing.
 
 #### Multiple Projects
 The `db/dbenv.sh` config file contains three port numbers (`SSH_PORT`, `HTTP_PORT` and `DB_PORT`) and a name for the Docker container (`CONTAINER_NAME`). These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - simply set unique values for these variables in the config of each project.
