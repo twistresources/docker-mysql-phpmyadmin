@@ -20,11 +20,13 @@ First, install [Boot2Docker](https://github.com/boot2docker/boot2docker).
 
     $ git clone https://github.com/twistresources/docker-mysql-phpmyadmin.git
     
-Once this is done, update the configuration file `dbenv.sh` as follows:
+Once this is done, you can move the downloaded files to your project directory.
+
+The next step is to update the configuration file `dbenv.sh`:
 
 DB_NAME - This name of a database you wish to create for your application.
 
-DOCKER_IP - I don't expect this changes, but if you have problems you can confirm the correct IP address using `boot2docker ip`.
+DOCKER_IP - This probably doesn'need to be this changed, but check that it matches the output of `boot2docker ip`.
 
 To start the database run:
 
