@@ -22,7 +22,7 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
 
 #### Installation
 
-1. Make sure you have [Boot2Docker](https://github.com/boot2docker/boot2docker) installed on your machine.
+1. Make sure you have [Boot2Docker](http://docs.docker.com/installation/mac/) installed on your machine.
 
     $ git clone https://github.com/twistresources/docker-mysql-phpmyadmin.git
     
