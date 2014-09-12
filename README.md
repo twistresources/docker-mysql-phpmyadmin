@@ -34,19 +34,24 @@ First time in this will download the Docker image, which takes a while, but it's
 
     http://192.168.59.103:49161/phpmyadmin.
 
-For the first login you will need to use the web interface to create a database with the name you set in `DOCKER_IP`.
+__Note__: After the first login you will need to use the web interface to create a database with the name you set in `DOCKER_IP`.
+
+If you wish to log into the MySQL container, you can use the following command. This and the other commands below use the default password 'admin'. If you will be using the database a lot it's a good idea to set up SSH keys for password-less login.
+
+    $ ./dbssh
+    
 
 You can back up the database at any time using:
 
-    $ dbdump
+    $ ./dbdump
     
 This command creates sequentially named data files. Note though that whenever you shut down the database it will run this data dump before shutting the server down.
 
-    $ dbstop
+    $ ./dbstop
     
 After end restart the database will be empty, but can be reloaded using
 
-    $ dbload
+    $ ./dbload
     
     
 #### Multiple Projects
