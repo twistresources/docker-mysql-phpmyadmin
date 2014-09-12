@@ -27,7 +27,7 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
 2. Place the downloaded files into a nicer location and tidy up.
 
     $ mv docker-mysql-phpmyadmin db  
-    $ rm db/.git
+    $ rm -rf db/.git
 
 3. Update the configuration file `db/dbenv.sh`:
 
