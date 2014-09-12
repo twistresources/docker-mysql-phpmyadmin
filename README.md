@@ -76,6 +76,21 @@ After each restart the database will be empty, but can be reloaded with the most
 
 Your application can connect to the database using the hostname provided by `DOCKER_IP` and the port number `DB_PORT`. The dbrun command also displays the DB details when it starts.
 
+**Update:**  
+Unfortunately MySQL now seems to block non-localhost access to databases by default. This might not be a problem if you are running you application inside a Docker container, but if you wish to connect to the database from a program running on your OSX desktop you'll need to update the configuration in the mysql container.
+
+Log in using the `db/dbssh` command, then do the following:
+
+    $ apt-get install vim
+    $ vi /etc/mysql/my.cnf
+    
+Comment out the line `bind-address           = 127.0.0.1`.
+
+    $ mysqladmin -u root shutdown  
+    $ mysqld_safe &
+    $ exit
+
+You should now be able to connect to the database.
 
 #### Multiple Projects
 The `db/dbenv.sh` config file contains three port numbers (`SSH_PORT`, `HTTP_PORT` and `DB_PORT`) and a name for the Docker container (`CONTAINER_NAME`). These don't normally need to be changed, but if you wish to run multiple instances of MySQL database - one for each development project - simply set unique values for these variables in the config of each project.
