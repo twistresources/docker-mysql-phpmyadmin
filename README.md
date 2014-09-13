@@ -68,7 +68,14 @@ This command creates sequentially named data files. Note that whenever you shut 
 After each restart the database will be empty, but can be reloaded with the most recently dumped contents using
 
     $ db/load
+
+If you get too many data files, all but the most recent can be deleted using
+
+    $ db/trim
     
+This command relies on the numeric suffix to determine the latest file, so files with names like '*.dump.35.safe' are ignored.  
+
+_Be very careful with this command_ - it does not check that the most recent file contains valid data. For example, if you use the following sequence of commands - db/run, db/dump, db/tidy - you will lose all meaningful backups, because you dumped an empty database.
 
 #### Application Database Access
 
