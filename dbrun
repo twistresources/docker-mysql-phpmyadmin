@@ -6,79 +6,80 @@ bin=`dirname $0`
 . $bin/dbenv.sh
 
 
-#	Start the Docker container
-echo docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 --rm wnameless/mysql-phpmyadmin
-docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 --rm wnameless/mysql-phpmyadmin &
+imagename=${CONTAINER_NAME}-image
 
-# Give it a chance to get running
+#
+#	Check we have SSH credentials on this machine
+#
+#
+keyfile=~/.ssh/id_rsa.pub
+key=`cat ${keyfile}`
+if [ ! -r ${keyfile} ] ; then
+	echo ""
+	echo "Error: please set up SSH keys at ${keyfile}"
+	echo ""
+	echo "Cannot proceed."
+	echo ""
+	exit 1;
+fi
+
+
+#
+#	Create the Dockerfile to build a new image.
+#	This is the same as wnameless/mysql-phpmyadmin, but with SSH keys set up
+#	for the current user, and with MySQL allowing access from outside localhost.
+#
+#
+DOCKERFILE="/tmp/$(basename $0).$$.Dockerfile"
+cat > ${DOCKERFILE} << END0
+FROM wnameless/mysql-phpmyadmin
+ENV HOME /root
+
+# Set up SSH key
+RUN mkdir /root/.ssh; echo "${key}" > /root/.ssh/authorized_keys; chmod 700 /root/.ssh; chmod 644 /root/.ssh/authorized_keys
+#USER root
+
+# Configure MySQL to allow non-localhost access (i.e. from outside it's Docker container)
+RUN sed -i 's/^bind-address/#bind-address/' /etc/mysql/my.cnf
+END0
+
+
+#
+#	Do the Docker build
+#
+#
+cat ${DOCKERFILE}
+docker build -t ${imagename} - < ${DOCKERFILE}
+[ $? != 0 ] && exit $?
+
+
+#
+#	Start the Docker container
+#
+#
+echo docker stop ${CONTAINER_NAME}
+     docker stop ${CONTAINER_NAME}
+echo docker rm ${CONTAINER_NAME}
+     docker rm ${CONTAINER_NAME}
+echo docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 -d ${imagename}
+     docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 --rm ${imagename} &
+[ $? != 0 ] && exit $?
 sleep 2
 
 
-# Make a few config fixes to the container and MySQL
-# Allow access to MySql from non-localhost, by root user
-# Copy SSH keys if they exist.
+#
+#	Set MySQL permissions for root access beyond localhost.
+#
+#
 echo ""
-echo "(Password is 'admin')"
 TFILE="/tmp/$(basename $0).$$.tmp"
-touch ${TFILE}
-
-#
-#	Install the SSH keys
-#
-keyfile=~/.ssh/id_rsa.pub
-if [ -r ${keyfile} ] ; then
-
-	key=`cat ${keyfile}`
-	cat >> ${TFILE} << END1
-
-	echo ''
-	echo 'Installing SSH key file'
-	mkdir .ssh
-	cat >> ~/.ssh/authorized_keys << ENDKEY
-${key}
-ENDKEY
-	chmod 700 .ssh
-	chmod 644 .ssh/authorized_keys
-END1
-fi
-
-#
-#	Patch the MySQL config
-#
-patchConfig=Y
-if [ ${patchConfig} == "Y" ] ; then
-
-	cat >> ${TFILE} <<END2
-
-	echo ''
-	echo 'Patching /etc/mysql/my.cnf'
-	sed -i 's/^bind-address/#bind-address/' /etc/mysql/my.cnf
-
-	echo ''
-	echo 'Shutting down mysql'
-	mysqladmin -u root shutdown
-	sleep 1
-
-	echo ''
-	echo 'Starting mysql'
-	mysqld_safe &
-	sleep 5
-
-END2
-fi
-
-#
-#	Give root permission to access from non-localhost
-#
-grantRootPerms=Y
-if [ ${grantRootPerms} == "Y" ] ; then
-
-	cat >> ${TFILE} <<END3
+cat > ${TFILE} <<END3
 	echo ''
 	echo 'Setting permissions for root database user.'
 	TICK="\\\`"
 	#cat << ENDSQL
 	mysql -u root << ENDSQL
+
 	CREATE DATABASE \${TICK}${DB_NAME}\${TICK} ;
 
 	USE \${TICK}${DB_NAME}\${TICK} ;
@@ -89,29 +90,34 @@ if [ ${grantRootPerms} == "Y" ] ; then
 
 	SET PASSWORD FOR  'root'@'%' =  '';
 ENDSQL
+	[ $? != 0 ] && exit $?
+	exit 0
 END3
-fi
 
-#
-#	Display a nice message at the end
-#
-cat >> ${TFILE} <<END4
-	echo ''
-	echo ''
-	echo 'Applications can now access the database at:'
+# Run the SQL commands on the server
+#cat ${TFILE}
+ssh root@${DOCKER_IP} -p ${SSH_PORT} /bin/bash -s < ${TFILE}
+if [ $? == 0 ] ; then
+
+	# Successful update
+	rm ${TFILE}
+
+	# Display a nice message
+	echo ""
+	echo ""
+	echo "Applications can now access the database at:"
 	echo "      Host: ${DOCKER_IP}"
 	echo "      Port: ${HTTP_PORT}"
-	echo ''
+	echo ""
 	echo "Access phpMyAdmin at: http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin"
-	echo ''
-	echo ''
-	echo 'Press Ctrl-C to continue...'
-END4
-
-#cat ${TFILE}
-#exit 1
-ssh root@${DOCKER_IP} -p ${SSH_PORT} /bin/bash -s < ${TFILE}
-
-rm ${TFILE}
-exit 0
-
+	echo ""
+	echo ""
+	exit 0
+else
+	# Error return
+	echo ""
+	echo ""
+	echo "Error: setting up the remote server failed."
+	echo ""
+	exit 1;
+fi
