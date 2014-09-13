@@ -5,5 +5,5 @@
 bin=`dirname $0`
 . $bin/dbenv.sh
 
-$bin/dbdump && \
+${bin}/dump && \
 docker stop ${CONTAINER_NAME}

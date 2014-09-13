@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+#	Export the database to a local file.
+#	This is VERY important, because the Docker container
+#	will be destroyed as it is shut down.
+#
+bin=`dirname $0`
+. $bin/dbenv.sh
+
+#
+# Find the highest numbered file
+#
+last='0'
+for file in ${bin}/${DB_NAME}.dump.* ; do
+	suffix=`echo ${file} | sed 's/.*\.dump\.\(.*\)$/\1/'`
+	num=`expr ${suffix} + 0 2>/dev/null` # Produces "" if non-numeric
+	[ "$num" != "" ] && [ "$num" -gt ${last} ] && last=$num
+done
+#echo last = ${last}
+
+#
+#	Check there was a file to keep
+#
+if [ "${last}" == "0" ] ; then
+	# No dump files to clean up
+	echo "No data files to clean up"
+	exit 0
+fi
+
+#
+#	Check the file we're keeping isn't empty
+#
+lastfile=${bin}/${DB_NAME}.dump.${last}
+if [ ! -s ${lastfile} ] ; then
+	echo ""
+	echo "Warning: Latest data file has zero length"
+	echo ""
+	ls -l ${lastfile}
+	echo ""
+	echo "Will not proceed."
+	echo ""
+	exit 1
+fi
+
+#
+#	Remove all other files
+#
+for n in ${bin}/${DB_NAME}.dump.* ; do
+	if [ ${n} != ${lastfile} ] ; then
+		# Only delete files with the numeric suffix
+		num=`echo $n | sed 's/.*\.dump\.\(.*\)$/\1/'`
+		num=`expr ${num} + 0 2>/dev/null`
+		if [ "$num" != "" ] ; then
+			echo "$" rm ${n}
+			         rm ${n}
+		fi
+	fi
+done
+
+#
+#	Display the file
+#
+echo ""
+echo "Retained this file:"
+echo ""
+ls -l ${lastfile}
+echo ""
+exit 0

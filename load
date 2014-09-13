@@ -7,15 +7,17 @@
 bin=`dirname $0`
 . $bin/dbenv.sh
 
-# Find a unique dump name
-n=1
-last='-'
-while [ -e ${bin}/${DB_NAME}.dump.${n} ] ; do
-	last=${n}
-	n=`expr $n + 1`
+#
+# Find the highest numbered data file
+#
+last='0'
+for file in ${bin}/${DB_NAME}.dump.* ; do
+	suffix=`echo ${file} | sed 's/.*\.dump\.\(.*\)$/\1/'`
+	num=`expr ${suffix} + 0 2>/dev/null` # Produces "" if non-numeric
+	[ "$num" != "" ] && [ "$num" -gt ${last} ] && last=$num
 done
 
-if [ "${last}" == "-" ] ; then
+if [ "${last}" == "0" ] ; then
 	echo ""
 	echo "Sorry, you don't have any data file to load"
 	echo "Could not find ${bin}/${DB_NAME}.dump.1"
@@ -25,7 +27,9 @@ fi
 
 # Display the file
 dumpfile=${bin}/${DB_NAME}.dump.${last}
-echo ''
+echo ""
+echo "Loading this file:"
+echo ""
 ls -l $dumpfile
 
 # Create the SQL file
@@ -35,9 +39,10 @@ cat ${dumpfile} >> $TMPFILE
 
 # Load the database
 echo ''
-echo Load data...
-ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root < ${TMPFILE}
+echo Loading data...
+echo "$" ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root "< ${TMPFILE}"
+         ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root < ${TMPFILE}
 
 # Tidy up
-rm ${TMPFILE}
+[ $? == 0 ] && rm ${TMPFILE}
 exit 0
