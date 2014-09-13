@@ -48,69 +48,66 @@ END0
 #	Do the Docker build
 #
 #
-cat ${DOCKERFILE}
-docker build -t ${imagename} - < ${DOCKERFILE}
+echo ''
+echo '** Build a new Docker image'
+echo "$" docker build -q -t ${imagename} - "< ${DOCKERFILE}"
+         docker build -q -t ${imagename} - > /dev/null < ${DOCKERFILE}
 [ $? != 0 ] && exit $?
+rm ${DOCKERFILE}
 
 
 #
 #	Start the Docker container
 #
 #
-echo docker stop ${CONTAINER_NAME}
-     docker stop ${CONTAINER_NAME}
-echo docker rm ${CONTAINER_NAME}
-     docker rm ${CONTAINER_NAME}
-echo docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 -d ${imagename}
-     docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 --rm ${imagename} &
+echo ''
+echo '** Remove any old container.'
+echo "$" docker stop ${CONTAINER_NAME}
+         docker stop ${CONTAINER_NAME}
+echo "$" docker rm ${CONTAINER_NAME}
+         docker rm ${CONTAINER_NAME}
+echo ''
+echo '** Start a new container using the new image.'
+echo "$" docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 -d ${imagename}
+         docker run --name ${CONTAINER_NAME} -p ${SSH_PORT}:22 -p ${HTTP_PORT}:80 -p ${DB_PORT}:3306 -d ${imagename}
 [ $? != 0 ] && exit $?
-sleep 2
+sleep 3
 
 
 #
 #	Set MySQL permissions for root access beyond localhost.
 #
 #
-echo ""
-TFILE="/tmp/$(basename $0).$$.tmp"
-cat > ${TFILE} <<END3
-	echo ''
-	echo 'Setting permissions for root database user.'
-	TICK="\\\`"
-	#cat << ENDSQL
-	mysql -u root << ENDSQL
+TICK="\`"
+echo ''
+echo '** Set MySQL permissions for root.'
+SQLFILE="/tmp/$(basename $0).$$.sql"
+cat > ${SQLFILE} << ENDSQL
 
-	CREATE DATABASE \${TICK}${DB_NAME}\${TICK} ;
+	CREATE DATABASE ${TICK}${DB_NAME}${TICK} ;
 
-	USE \${TICK}${DB_NAME}\${TICK} ;
+	USE ${TICK}${DB_NAME}${TICK} ;
 
 	CREATE USER 'root'@'%' IDENTIFIED BY  '***';
 
-	GRANT ALL PRIVILEGES ON  \${TICK}${DB_NAME}\${TICK} . * TO  'root'@'%' WITH GRANT OPTION ;
+	GRANT ALL PRIVILEGES ON  ${TICK}${DB_NAME}${TICK} . * TO  'root'@'%' WITH GRANT OPTION ;
 
 	SET PASSWORD FOR  'root'@'%' =  '';
 ENDSQL
-	[ $? != 0 ] && exit $?
-	exit 0
-END3
-
-# Run the SQL commands on the server
-#cat ${TFILE}
-ssh root@${DOCKER_IP} -p ${SSH_PORT} /bin/bash -s < ${TFILE}
+echo "$" ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root "< ${SQLFILE}"
+         ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root < ${SQLFILE}
 if [ $? == 0 ] ; then
 
 	# Successful update
-	rm ${TFILE}
-
-	# Display a nice message
+	rm ${SQLFILE}
+	echo ""
+	echo "** Complete."
 	echo ""
 	echo ""
-	echo "Applications can now access the database at:"
-	echo "      Host: ${DOCKER_IP}"
-	echo "      Port: ${HTTP_PORT}"
+	echo "        Host: ${DOCKER_IP}"
+	echo "        Port: ${HTTP_PORT}"
 	echo ""
-	echo "Access phpMyAdmin at: http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin"
-	echo ""
+	echo "       phpMyAdmin: http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin"
 	echo ""
 	exit 0
 else
