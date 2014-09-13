@@ -107,7 +107,7 @@ if [ $? == 0 ] ; then
 	echo "        Host: ${DOCKER_IP}"
 	echo "        Port: ${HTTP_PORT}"
 	echo ""
-	echo "       phpMyAdmin: http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin"
+	echo "        phpMyAdmin: http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin"
 	echo ""
 	exit 0
 else
