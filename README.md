@@ -26,9 +26,9 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
 
 1. Install the scripts in this repo
 
-    $ git clone https://github.com/twistresources/docker-mysql-phpmyadmin.git
+    $ git clone https://github.com/twistresources/docker-mysql-phpmyadmin.git  
     $ mv docker-mysql-phpmyadmin db  
-    $ rm -rf db/.git
+    $ rm -rf db/.git  
 
 1. Update the configuration file `db/dbenv.sh`:
 
