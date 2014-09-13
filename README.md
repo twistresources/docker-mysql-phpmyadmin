@@ -42,7 +42,7 @@ Before running these commands, ensure you have a pubic SSH key installed at `~/.
 
 To start the database run:
 
-    $ db/dbrun
+    $ db/run
     
 First time in this will download the Docker image, which takes a while, but it's much faster subsequently. Once it starts you can access PhpMyAdmin from your browser, at
 
@@ -50,29 +50,29 @@ First time in this will download the Docker image, which takes a while, but it's
 
 or you can jump to this page using:
 
-    $ db/dbadmin
+    $ db/admin
 
 If you wish to log into the MySQL container, you can use the following command.
 
-    $ db/dbssh
+    $ db/login
     
 
 You can back up the database at any time using:
 
-    $ db/dbdump
+    $ db/dump
     
 This command creates sequentially named data files. Note that whenever you shut down the database it will also run this data dump before shutting the server down.
 
-    $ db/dbstop
+    $ db/stop
     
 After each restart the database will be empty, but can be reloaded with the most recently dumped contents using
 
-    $ db/dbload
+    $ db/load
     
 
 #### Application Database Access
 
-Your application can connect to the database using the hostname provided by `DOCKER_IP` and the port number `DB_PORT`. The dbrun command also displays the DB details when it starts.
+Your application can connect to the database using the hostname provided by `DOCKER_IP` and the port number `DB_PORT`. The `run` command also displays the DB details when it starts.
 
 **PLEASE NOTE:**  
 During development the root user is given full permissions to the database, without password protection. Do not expose this database outside the local firewall. Be especially careful if this Docker container is promoted through to cloud based servers for testing.
