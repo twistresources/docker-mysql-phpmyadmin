@@ -10,7 +10,7 @@ bin=`dirname $0`
 # Find a unique dump name
 n=1
 last='-'
-while [ -e ${DB_NAME}.dump.${n} ] ; do
+while [ -e ${bin}/${DB_NAME}.dump.${n} ] ; do
 	last=${n}
 	n=`expr $n + 1`
 done
@@ -18,28 +18,26 @@ done
 if [ "${last}" == "-" ] ; then
 	echo ""
 	echo "Sorry, you don't have any data file to load"
-	echo "Could not find ${DB_NAME}.dump.1"
+	echo "Could not find ${bin}/${DB_NAME}.dump.1"
 	echo ""
 	exit 1
 fi
 
 # Display the file
-dumpfile=${DB_NAME}.dump.${last}
+dumpfile=${bin}/${DB_NAME}.dump.${last}
 echo ''
 ls -l $dumpfile
 
 # Create the SQL file
-TFILE="/tmp/$(basename $0).$$.tmp"
-#echo "drop database \`${DB_NAME}\` ;" >> $TFILE
-#echo "create database \`${DB_NAME}\` ;" >> $TFILE
-echo "connect \`${DB_NAME}\` ;" >> $TFILE
-cat ${dumpfile} >> $TFILE
+TMPFILE="/tmp/$(basename $0).$$.tmp"
+echo "connect \`${DB_NAME}\` ;" >> $TMPFILE
+cat ${dumpfile} >> $TMPFILE
 
 # Load the database
 echo ''
 echo Load data...
-ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root < ${TFILE}
+ssh root@${DOCKER_IP} -p ${SSH_PORT} mysql -u root < ${TMPFILE}
 
 # Tidy up
-rm ${TFILE}
+rm ${TMPFILE}
 exit 0
