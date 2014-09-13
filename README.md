@@ -24,14 +24,13 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
 
 1. Make sure you have [Boot2Docker](http://docs.docker.com/installation/mac/) installed on your machine.
 
-    $ git clone https://github.com/twistresources/docker-mysql-phpmyadmin.git
-    
-2. Place the downloaded files into a nicer location and tidy up.
+1. Install the scripts in this repo
 
+    $ git clone https://github.com/twistresources/docker-mysql-phpmyadmin.git
     $ mv docker-mysql-phpmyadmin db  
     $ rm -rf db/.git
 
-3. Update the configuration file `db/dbenv.sh`:
+1. Update the configuration file `db/dbenv.sh`:
 
   DB_NAME - This name of a database you wish to create for your application.
 
@@ -39,12 +38,13 @@ The scripts in the repo make it easy to start and stop a MySql database, and to 
 
 
 #### Commands
+Before running these commands, ensure you have a pubic SSH key installed at `~/.ssh/id_rsa.pub`.
 
 To start the database run:
 
     $ db/dbrun
     
-First time in this will download the Docker image, which takes a while, but it's much faster subsequently. You'll need to enter the default password ('admin') during this step. Once it starts you can access PhpMyAdmin from your browser, at
+First time in this will download the Docker image, which takes a while, but it's much faster subsequently. Once it starts you can access PhpMyAdmin from your browser, at
 
     http://192.168.59.103:49161/phpmyadmin.
 
