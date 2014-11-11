@@ -48,7 +48,7 @@ First time in this will download the Docker image, which takes a while, but it's
 
     http://192.168.59.103:49161/phpmyadmin.
 
-or you can jump to this page using:
+By default the username is `root`, with no password. Alternatively you can jump to this page using:
 
     $ db/admin
 
