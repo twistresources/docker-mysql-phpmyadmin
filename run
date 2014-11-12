@@ -105,7 +105,7 @@ if [ $? == 0 ] ; then
 	echo ""
 	echo ""
 	echo "        Host: ${DOCKER_IP}"
-	echo "        Port: ${HTTP_PORT}"
+	echo "        Port: ${DB_PORT}"
 	echo ""
 	echo "        phpMyAdmin: http://${DOCKER_IP}:${HTTP_PORT}/phpmyadmin"
 	echo ""
